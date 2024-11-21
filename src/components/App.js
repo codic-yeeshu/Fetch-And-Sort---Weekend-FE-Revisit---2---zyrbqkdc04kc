@@ -1,33 +1,62 @@
-import React, { useState } from 'react'
-import '../styles/App.css';
+import React, { useEffect, useState } from "react";
+import "../styles/App.css";
 
 const App = () => {
-
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [sortAscending, setSortAscending] = useState(true);  
+  const [sortAscending, setSortAscending] = useState(true);
+
+  useEffect(() => {
+    if (!isLoading) return;
+    fetch("https://content.newtonschool.co/v1/pr/main/users")
+      .then((res) => res.json())
+      .then((data) => setUsers([...data]));
+    setIsLoading(false);
+  }, [isLoading]);
+
+  useEffect(() => {
+    const sortData = () => {
+      let newData;
+      if (sortAscending) {
+        newData = users.sort((a, b) => b.name.length - a.name.length);
+      } else {
+        newData = users.sort((a, b) => a.name.length - b.name.length);
+      }
+      setUsers([...newData]);
+    };
+    sortData();
+  }, [sortAscending]);
 
   return (
     <div id="main">
       <h2>User List</h2>
-      <button className="fetch-data-btn">Fetch User Data</button>
-      <button className="sort-btn">
-        "Sort by name length (ascending)"
-        "Sort by name length (descending)"
+      <button className="fetch-data-btn" onClick={() => setIsLoading(true)}>
+        Fetch User Data
       </button>
-      <p>Loading...</p>
-      <div className='users-section'>
-          <li>
-            <section className='id-section'></section>
-            <section className='name-email-section'>
-              <p className='name'>Name: </p>
-              <p className='email'>Email: </p>
-            </section>
-          </li>
-      </div>
+      <button
+        className="sort-btn"
+        onClick={() => setSortAscending((prev) => !prev)}
+      >
+        {`Sort by name length (${!sortAscending ? "descending" : "ascending"})`}
+      </button>
+      {isLoading && <p>Loading...</p>}
+      {!isLoading && (
+        <div className="users-section">
+          <ul>
+            {users.map((user) => (
+              <li key={user.id}>
+                <section className="id-section">{user.id}</section>
+                <section className="name-email-section">
+                  <p className="name">Name: {user.name}</p>
+                  <p className="email">Email: {user.email}</p>
+                </section>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
-  )
-}
-
+  );
+};
 
 export default App;
