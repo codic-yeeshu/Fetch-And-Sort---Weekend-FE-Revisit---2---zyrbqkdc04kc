@@ -42,17 +42,15 @@ const App = () => {
       {isLoading && <p>Loading...</p>}
       {!isLoading && (
         <div className="users-section">
-          <ul>
-            {users.map((user) => (
-              <li key={user.id}>
-                <section className="id-section">{user.id}</section>
-                <section className="name-email-section">
-                  <p className="name">Name: {user.name}</p>
-                  <p className="email">Email: {user.email}</p>
-                </section>
-              </li>
-            ))}
-          </ul>
+          {users.map((user) => (
+            <li key={user.id}>
+              <section className="id-section">{user.id}</section>
+              <section className="name-email-section">
+                <p className="name">Name: {user.name}</p>
+                <p className="email">Email: {user.email}</p>
+              </section>
+            </li>
+          ))}
         </div>
       )}
     </div>
